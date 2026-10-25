@@ -44,13 +44,13 @@ constexpr float MAX_ENERGY = 100.0f;        // Maximalwert für die Spielerenerg
 constexpr float MAX_ARMOUR = 200.0f;        // Maximalwert für das Rad
 constexpr int DIAMONDS_FOR_EXTRALIFE = 50;  // Diamanten die man für 200 Zeiteinheiten
 
-#if defined(__AROS__) || defined(AMIGA_MINIGL)
+#if defined(__AROS__) || defined(AMIGA_OS)
 #  define TEMP_FILE_PREFIX "T:"
 #else
 #  define TEMP_FILE_PREFIX
 #endif
 
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
 // Fallback base for data and save files when the executable's full path is
 // unusable (volume root); libnix turns "PROGDIR:./sub" into "PROGDIR:sub"
 #  define AMIGA_PROGDIR "PROGDIR:."

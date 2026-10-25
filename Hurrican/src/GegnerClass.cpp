@@ -521,7 +521,7 @@ bool GegnerClass::TurnonShot() {
 
 bool GegnerClass::IsOnScreen() const {
 
-    int off = std::min(GegnerRect[GegnerArt].left, 0);
+    int off = std::min<int32_t>(GegnerRect[GegnerArt].left, 0);
 
     int xsize = pGegnerGrafix[GegnerArt]->itsXFrameSize;
     int ysize = pGegnerGrafix[GegnerArt]->itsYFrameSize;

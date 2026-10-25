@@ -16,8 +16,20 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#if defined(AMIGA_OGLES2)
+#include <GLES2/gl2.h>
+#include <proto/ogles2.h>
+#else
 #include <proto/minigl.h>
+#endif
 #undef TEXT
+
+#if defined(AMIGA_OGLES2)
+// clib2's offsetof goes through a null pointer and is no constant expression
+#include <stddef.h>
+#undef offsetof
+#define offsetof(type, member) __builtin_offsetof(type, member)
+#endif
 
 // libstdc++ for m68k-amigaos is built without the C99 math TR1 functions
 // in namespace std, although libnix declares them. glm needs them.

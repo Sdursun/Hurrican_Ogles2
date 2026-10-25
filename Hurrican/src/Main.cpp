@@ -74,7 +74,7 @@ DirectInputClass DirectInput;        // Input-Objekt
 TimerClass Timer;                    // Timer Klasse für die Framerate
 #if defined(__AROS__)
 Logdatei Protokoll("T:Game_Log.txt");  // Protokoll Datei
-#elif defined(AMIGA_MINIGL)
+#elif defined(AMIGA_OS)
 Logdatei Protokoll("PROGDIR:Game_Log.txt");  // next to the executable
 #else
 Logdatei Protokoll("Game_Log.txt");  // Protokoll Datei
@@ -336,14 +336,39 @@ std::string getXdgDir(const char *xdgVar, const char *fallback) {
     return xdg_ext;
 }
 #endif
-#if defined(AMIGA_MINIGL)
-// AmigaOS starts programs with a 4 KB stack by default; libnix's swapstack
-// module moves us to a bigger one before main() runs
+#if defined(AMIGA_OS)
+// AmigaOS starts programs with a 4 KB stack by default; the C runtime moves
+// us to a bigger one before main() runs
+#  if defined(AMIGA_OGLES2)
 extern "C" {
+unsigned int __stack_size = 512 * 1024;  // clib2
+
+// clib2 has no strtold, which libstdc++'s number parsing calls
+long double strtold(const char *s, char **end) {
+    return strtod(s, end);
+}
+
+// GCC merges sinf(x) and cosf(x) of the same x into cexpf(i*x) when the C
+// library has no sincosf, and clib2 has no cexpf either. sinf/cosf are
+// called through pointers here so this one is not merged into itself. LTO
+// must keep it global: the calls to it only appear after LTO.
+__attribute__((used, externally_visible)) __complex__ float cexpf(__complex__ float z) {
+    static float (*volatile sin_f)(float) = sinf;
+    static float (*volatile cos_f)(float) = cosf;
+    const float r = expf(__real__ z);
+    __complex__ float out;
+    __real__ out = r * cos_f(__imag__ z);
+    __imag__ out = r * sin_f(__imag__ z);
+    return out;
+}
+}
+#  else
+extern "C" {  // libnix's swapstack module
 void __stkinit(void);
 void *__stkinit_ref = reinterpret_cast<void *>(__stkinit);
 unsigned long __stack = 512 * 1024;
 }
+#  endif
 
 // Full AmigaDOS path of the executable's directory, e.g. "Work:Games/Hurrican".
 // Paths are built as base + "/sub", which gives native "Work:Games/Hurrican/sub".
@@ -389,7 +414,7 @@ int main(int argc, char *argv[]) {
             Protokoll << "\tUsing '.' folder as fallback." << std::endl;
             g_storage_ext = ".";
         }
-#  elif defined(AMIGA_MINIGL)
+#  elif defined(AMIGA_OS)
         // The executable's own directory, whatever the current directory is
         g_storage_ext = AmigaProgramDir();
 #  else
@@ -410,7 +435,7 @@ int main(int argc, char *argv[]) {
 
         // Makefile is specifying this is a UNIX machine and we should write saves, settings, etc to $XDG_DATA_HOME/hurrican/ dir
         g_save_ext = getXdgDir("XDG_DATA_HOME", "/.local/share/hurrican");
-#  elif defined(AMIGA_MINIGL)
+#  elif defined(AMIGA_OS)
         g_save_ext = AmigaProgramDir();
         g_config_ext = g_save_ext;
 #  else
@@ -533,7 +558,7 @@ bool GameInit() {
     langfilepath.append("/lang");
     FindLanguageFiles(langfilepath.c_str());
 
-#if !defined(AMIGA_MINIGL)  // the Amiga build always knows the executable's directory
+#if !defined(AMIGA_OS)  // the Amiga build always knows the executable's directory
     // Try again if needed
     if (LanguageFiles.empty()) {
         langfilepath.assign("./");
@@ -947,7 +972,7 @@ bool Heartbeat() {
 
 jump:
 
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
     // Screenshot machen: F8 (Amiga keyboards have no F12), once per press,
     // before the frame is shown
     static bool ScreenshotKeyHeld = false;

@@ -41,6 +41,31 @@ sources and libraries are linked against that stub into `hurrican-classic`:
 On the Amiga install the Classic `minigl.library` (from its `bin/`) in `LIBS:`
 instead of the PiStorm3D one, plus Warp3D or Wazp3D.
 
+### ogles2 variant (OpenGL ES 2.0, SDL2)
+
+A second build draws with OpenGL ES 2.0 through
+[ogles2.library](https://github.com/ladislawv/ogles2) (PiStorm with a Pi 4 /
+CM4 only) and uses SDL2 with ogles2's backend and Hurrican's `GLES2`
+renderer. That SDL2 is built with clib2, so everything in this variant is
+built with clib2 too:
+
+1. Unpack `ogles2-<v>-sdk.lha` and `ogles2-<v>-sdl.lha` (or their `.zip`)
+   and build the libraries into `/opt/amiga/hurrican-ogles2-sdk`:
+
+       Hurrican/amiga/build-deps-ogles2.sh <ogles2-sdk>/ogles2/SDK <ogles2-sdl>/ogles2/SDK
+
+2. Build the game:
+
+       cmake ../Hurrican -DCMAKE_TOOLCHAIN_FILE=../Hurrican/cmake/m68k-amigaos.cmake \
+             -DAMIGA_CRT=clib2 -DPLATFORM=AMIGA_OGLES2 -DCMAKE_BUILD_TYPE=Release \
+             -DUSE_PRECOMPILED_HEADERS=OFF
+       make -j$(nproc)
+
+On the Amiga it needs `ogles2.library` and its shader compiler `v3dglslc`
+(ogles2's `Install-ogles2`, or both in `PROGDIR:libs/`). Hurrican's shaders
+in `data/shaders/100` are compiled on the first start and kept in
+`OGLES2Cache:` (or `T:`).
+
 ## Running
 
 Requirements on the Amiga:

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <filesystem>
 
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
 
 // libstdc++ for m68k-amigaos does not get file status right on libnix
 // (every file looks missing), so the status queries Hurrican uses are done

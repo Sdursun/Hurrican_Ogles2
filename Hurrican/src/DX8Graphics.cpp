@@ -28,7 +28,7 @@
 #if defined(USE_EGL_SDL) || defined(USE_EGL_RAW) || defined(USE_EGL_RPI)
 #include "eglport.hpp"
 #endif
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
 #include <png.h>
 #include <cstdio>
 #include <vector>
@@ -110,6 +110,11 @@ bool DirectGraphicsClass::Init(std::uint32_t dwBreite, std::uint32_t dwHoehe, st
 
     // Initialize defaults, Video and Audio subsystems
     Protokoll << "Initializing SDL." << std::endl;
+#if defined(AMIGA_OGLES2)
+    // SDL2_68k picks Paula before AHI and reads no Amiga environment
+    // variables, so ask for AHI here
+    SDL_SetHint(SDL_HINT_AUDIODRIVER, "ahi");
+#endif
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) == -1) {
         Protokoll << "Failed to initialize SDL: " << SDL_GetError() << "." << std::endl;
         return false;
@@ -487,7 +492,7 @@ bool DirectGraphicsClass::SetDeviceInfo() {
 
 bool DirectGraphicsClass::TakeScreenshot(const char Filename[100], int screenx, int screeny) {
 
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
     // PROGDIR:screenshots/<name>NNN.png, numbered after the last one there.
     // The whole screen is read, black borders included, from the buffer
     // that is about to be shown.

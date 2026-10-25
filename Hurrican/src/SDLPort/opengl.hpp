@@ -5,6 +5,11 @@
 // AmigaOS 68k: GL entry points come from minigl.library (e.g. PiStorm3D),
 // the context is created by SDL 1.2's MiniGL backend
 #include <proto/minigl.h>
+#elif defined(AMIGA_OGLES2)
+// AmigaOS 68k: OpenGL ES 2.0 from ogles2.library (PiStorm). The gl* calls are
+// inline wrappers around its dispatch table; SDL2 creates the context.
+#include <GLES2/gl2.h>
+#include <proto/ogles2.h>
 #else
 #include <epoxy/gl.h>
 #endif

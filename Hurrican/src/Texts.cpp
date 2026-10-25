@@ -168,7 +168,7 @@ void FindLanguageFiles(const char *path) {
 
     Protokoll << "Searching for language files in " << path << std::endl;
 
-#if defined(AMIGA_MINIGL)
+#if defined(AMIGA_OS)
     // libstdc++ for m68k-amigaos is built without dirent support, so
     // fs::directory_iterator never yields anything; scan with dos.library
     BPTR lock = Lock(path, ACCESS_READ);

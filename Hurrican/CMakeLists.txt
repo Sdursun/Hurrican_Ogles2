@@ -434,8 +434,13 @@ elseif(PLATFORM STREQUAL "PANDORA")
     add_definitions(-DUSE_FAST_TRIG)
 elseif(PLATFORM STREQUAL "AMIGA")
     # AmigaOS 3.x 68k with SDL 1.2 + minigl.library (PiStorm3D)
-    add_definitions(-DAMIGA_MINIGL)
+    add_definitions(-DAMIGA_OS -DAMIGA_MINIGL)
     set(RENDERER "GL1")
+elseif(PLATFORM STREQUAL "AMIGA_OGLES2")
+    # AmigaOS 3.x 68k with SDL2 + ogles2.library (OpenGL ES 2.0 on PiStorm),
+    # built with clib2 (-DAMIGA_CRT=clib2)
+    add_definitions(-DAMIGA_OS -DAMIGA_OGLES2)
+    set(RENDERER "GLES2")
 endif()
 
 # Default to OpenGL 2
@@ -551,6 +556,21 @@ if (PLATFORM STREQUAL "AMIGA")
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${AMIGA_OUTPUT_NAME})
     target_link_directories(${PROJECT_NAME} PRIVATE ${AMIGA_SDK}/lib)
     target_link_libraries(${PROJECT_NAME} SDL_mixer SDL_image SDL modplug png z ${AMIGA_MINIGL_LIB} m)
+elseif (PLATFORM STREQUAL "AMIGA_OGLES2")
+    # Cross build with clib2: SDL2 with the ogles2 backend (from the ogles2
+    # SDL archive), libogles2.a, SDL2_image/SDL2_mixer and their codecs, all
+    # installed under AMIGA_SDK by amiga/build-deps-ogles2.sh
+    set(AMIGA_SDK "/opt/amiga/hurrican-ogles2-sdk" CACHE PATH "Prefix with the 68k SDL2/ogles2 libraries")
+    include_directories(${AMIGA_SDK}/include ${AMIGA_SDK}/include/SDL2)
+    target_compile_options(${PROJECT_NAME} PRIVATE -include ${CMAKE_SOURCE_DIR}/src/SDLPort/amiga_prelude.hpp)
+    set(AMIGA_OUTPUT_NAME "hurrican" CACHE STRING "File name of the Amiga executable")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${AMIGA_OUTPUT_NAME})
+    target_link_directories(${PROJECT_NAME} PRIVATE ${AMIGA_SDK}/lib)
+    # SDL2 links minigl.library's import library for its desktop-GL path.
+    # The dos.library calls (plain clib/ prototypes, see amiga_prelude.hpp)
+    # come from the toolchain's stub libamiga.a, which clib2's lacks.
+    target_link_libraries(${PROJECT_NAME} SDL2_mixer SDL2_image SDL2 modplug png z ogles2 minigl debug amiga
+                          ${AMIGA_TOOLCHAIN_PREFIX}/m68k-amigaos/lib/libamiga.a m)
 else()
 
 set(SDL2_BUILDING_LIBRARY TRUE)
