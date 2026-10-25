@@ -83,6 +83,10 @@ sed -i 's|^#if !defined(__HAIKU__) && !defined(__PSP__)|#if !defined(__AMIGAOS3_
 # fullscreen window is left without an Intuition window to draw into.
 sed -i 's|SA_Depth,      (ULONG)depth,|SA_Depth,      (ULONG)(depth > 24 ? 24 : depth),|' \
     "$L/src/video/amigaos3/SDL_os3window.c" "$L/src/video/amigaos3/SDL_os3video.c"
+# SDL2_68k's joystick driver reports no joysticks; ours reads lowlevel.library
+# and the Xbox 360 pads of xbox360w.class (see the file)
+cp "$HERE"/joystick/sdl2/SDL_sysjoystick.c "$HERE"/joystick/amiga_xbox360w.h \
+   "$HERE"/joystick/xbox360w.h "$L/src/joystick/amigaos3/"
 # SDL2_68k was written for GCC 6: its config defines no HAVE_STDLIB_H etc.,
 # so the C library's prototypes come in through -include here, and GCC 14's
 # stricter C rules are relaxed with -fpermissive
