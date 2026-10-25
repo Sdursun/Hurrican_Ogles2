@@ -168,7 +168,11 @@ bool DirectGraphicsClass::Init(std::uint32_t dwBreite, std::uint32_t dwHoehe, st
 
     // Setup SDL Screen
     if (isFullscreen) {
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if defined(AMIGA_OGLES2)
+        // SDL2_68k opens a screen of the window's size for a real fullscreen
+        // window; a "desktop" one gets no Intuition window to draw into
+        flags |= SDL_WINDOW_FULLSCREEN;
+#elif SDL_VERSION_ATLEAST(2, 0, 0)
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 #else /* SDL 1.2 */
         flags |= SDL_FULLSCREEN;

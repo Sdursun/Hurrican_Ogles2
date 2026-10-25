@@ -24,13 +24,6 @@
 #endif
 #undef TEXT
 
-#if defined(AMIGA_OGLES2)
-// clib2's offsetof goes through a null pointer and is no constant expression
-#include <stddef.h>
-#undef offsetof
-#define offsetof(type, member) __builtin_offsetof(type, member)
-#endif
-
 // libstdc++ for m68k-amigaos is built without the C99 math TR1 functions
 // in namespace std, although libnix declares them. glm needs them.
 #include <cmath>

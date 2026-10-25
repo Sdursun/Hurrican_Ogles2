@@ -45,23 +45,28 @@ instead of the PiStorm3D one, plus Warp3D or Wazp3D.
 
 A second build draws with OpenGL ES 2.0 through
 [ogles2.library](https://github.com/ladislawv/ogles2) (PiStorm with a Pi 4 /
-CM4 only) and uses SDL2 with ogles2's backend and Hurrican's `GLES2`
-renderer. That SDL2 is built with clib2, so everything in this variant is
-built with clib2 too:
+CM4 only; in WinUAE through QuarkTex NG's ogles2.library) and uses SDL2
+with ogles2's backend and Hurrican's `GLES2` renderer. It is built with
+libnix like the MiniGL build: ogles2's prebuilt SDL2 is clib2, which the
+toolchain's libstdc++ does not work with, so SDL2 is built from source.
 
-1. Unpack `ogles2-<v>-sdk.lha` and `ogles2-<v>-sdl.lha` (or their `.zip`)
-   and build the libraries into `/opt/amiga/hurrican-ogles2-sdk`:
+1. Unpack `ogles2-<v>-sdk.lha` (or `.zip`) and build the libraries into
+   `/opt/amiga/hurrican-ogles2-sdk` (zlib and libpng come from
+   `build-deps.sh`):
 
-       Hurrican/amiga/build-deps-ogles2.sh <ogles2-sdk>/ogles2/SDK <ogles2-sdl>/ogles2/SDK
+       Hurrican/amiga/build-deps-ogles2.sh <ogles2-sdk>/ogles2/SDK <PiStorm3D>/SDK
+
+   It builds Steffen Haeuser's SDL2_68k with the patches and GLES2 backend
+   of ogles2's `ports/sdl2`, plus libmodplug, SDL2_image and SDL2_mixer.
 
 2. Build the game:
 
        cmake ../Hurrican -DCMAKE_TOOLCHAIN_FILE=../Hurrican/cmake/m68k-amigaos.cmake \
-             -DAMIGA_CRT=clib2 -DPLATFORM=AMIGA_OGLES2 -DCMAKE_BUILD_TYPE=Release \
+             -DPLATFORM=AMIGA_OGLES2 -DCMAKE_BUILD_TYPE=Release \
              -DUSE_PRECOMPILED_HEADERS=OFF
        make -j$(nproc)
 
-On the Amiga it needs `ogles2.library` and its shader compiler `v3dglslc`
+On a PiStorm it needs `ogles2.library` and its shader compiler `v3dglslc`
 (ogles2's `Install-ogles2`, or both in `PROGDIR:libs/`). Hurrican's shaders
 in `data/shaders/100` are compiled on the first start and kept in
 `OGLES2Cache:` (or `T:`).
