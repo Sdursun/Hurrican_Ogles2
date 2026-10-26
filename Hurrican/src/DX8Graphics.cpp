@@ -865,6 +865,10 @@ void DirectGraphicsClass::ShowBackBuffer() {
         vertices[3].tv = 1; /* upper right */
 
         SelectBuffer(false);
+#if defined(AMIGA_OGLES2)
+        // the borders around the picture (see ClearBackBuffer)
+        glClear(GL_COLOR_BUFFER_BIT);
+#endif
 
         use_shader = CrtEnabled ? shader_t::RENDER : shader_t::TEXTURE;
         RenderBuffer.BindTexture(true);
@@ -984,6 +988,18 @@ void DirectGraphicsClass::SetupFramebuffers() {
 }
 
 void DirectGraphicsClass::ClearBackBuffer() {
+#if defined(AMIGA_OGLES2) && defined(USE_FBO)
+    // ogles2.library on the PiStorm's tiled GPU: a clear of the window's
+    // framebuffer on its own, in the middle of the frame, reached the screen
+    // as a frame of its own, so the menus and the cracktro (which call this
+    // every frame) flickered between black and the picture. The window is
+    // cleared in ShowBackBuffer instead, together with the frame's copy.
+    if (RenderBuffer.IsEnabled()) {
+        glBindFramebuffer(GL_FRAMEBUFFER, RenderBuffer.GetFramebuffer());
+        glClear(GL_COLOR_BUFFER_BIT);
+        return;
+    }
+#endif
 #if (defined(USE_GL2) || defined(USE_GL3)) && defined(USE_FBO)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
