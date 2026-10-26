@@ -1,0 +1,118 @@
+Short:        Turrican-style jump and shoot, ogles2
+Author:       Poke53280 (Eiswuxe), Amiga port by Serkan DURSUN
+Uploader:     blasterreal@gmail.com (Serkan DURSUN)
+Type:         game/shoot
+Version:      1.1
+Architecture: m68k-amigaos >= 3.0.0
+Requires:     PiStorm (Pi 4/CM4), RTG, ogles2.library 1.3, AHI
+
+Hurrican is a freeware jump and shoot game by Poke53280 (Eiswuxe), made
+in the spirit of Manfred Trenz's Turrican. Blast your way through nine
+levels full of enemies and power-ups; seven user level packs are included.
+
+This is a native AmigaOS 3.x 68k port of the community version from
+https://github.com/HurricanGame/Hurrican, drawn with OpenGL ES 2.0 and
+shaders through ogles2.library on the Raspberry Pi's GPU. The same game
+for minigl.library is game/shoot/Hurrican_Minigl.lha.
+
+
+REQUIREMENTS
+------------
+
+ - A PiStorm with a Raspberry Pi 4 or CM4 and Emu68, AmigaOS 3.x
+ - An RTG system (Picasso96 or CyberGraphX) with a 32-bit 640x480 mode
+ - ogles2.library 1.3 and its shader compiler v3dglslc in LIBS: (not
+   included; github.com/ladislawv/ogles2, installed with its
+   Install-ogles2). In WinUAE, QuarkTex NG's ogles2.library works too.
+ - AHI for sound
+
+The game compiles its shaders on the first start, which takes a few
+seconds. They are kept in OGLES2Cache: when Install-ogles2 has set it
+up, otherwise in T: until the next reboot.
+
+If the game stays on a grey or white screen at the start, LIBS:v3dglslc
+has lost its "e" protection bit (files copied from an archive unpacked
+on a PC do). Fix it with:  Protect LIBS:v3dglslc +e
+
+
+INSTALLATION
+------------
+
+Unpack the archive anywhere and start Hurrican from its icon or from
+the Shell. Settings, high scores and Game_Log.txt are kept in the
+program's drawer (PROGDIR:). Quit the game from its menu.
+
+F8 saves a screenshot as PNG in the screenshots drawer next to the
+program (PROGDIR:screenshots/Hurrican001.png, Hurrican002.png, ...).
+
+Command line options (Hurrican --help lists all of them):
+
+  -W        run in a window on Workbench instead of a screen of its own
+  -F        show the frame rate
+
+Languages: English, German, French, Spanish, Italian, Polish,
+Portuguese, Swedish and Turkish (Preferences, Choose language).
+
+
+CONTROLS
+--------
+
+Preferences, Configure controls, "type" chooses the keyboard, the
+joystick or CD32 pad in either Amiga port (through lowlevel.library) or
+an Xbox 360 pad.
+
+Xbox 360 pads: with xbox360w.class running (Poseidon, Xbox 360 Wireless
+Receiver), its pads 1 and 2 are listed as "Xbox 360 Controller 1" and
+"... 2". Choosing one sets its own buttons: A jump, X shoot, B lightning,
+Y powerline, RB grenade, LB shockwave, Back next weapon, Start menu; the
+D-pad or the left stick walk. The buttons are shown by their names and
+can be changed as usual.
+
+
+SOURCE
+------
+
+  https://github.com/Sdursun/Hurrican_Minigl  (branch hurrican_ogles2)
+
+The ogles2 build (GCC 16 cross compiler, libnix) is described in
+Hurrican/amiga/README.md there; Hurrican/amiga/build-deps-ogles2.sh
+fetches and builds every library this program is linked with, including
+the changes applied to them: SDL2 (Steffen Haeuser's SDL2_68k with the
+ogles2 project's GLES2 backend and patches, and a joystick driver of this
+port), SDL2_image, SDL2_mixer and libmodplug.
+
+
+LICENSES
+--------
+
+ - The game, its graphics, music, sounds and levels: (c) Poke53280. Free
+   to use, modify and pass on, but not to sell (see Docs/README-source.txt
+   and Docs/readme.txt). Commercial use of the assets needs the author's
+   permission.
+ - The Amiga port's own code: MIT license (Docs/LICENSE-port.txt).
+ - Linked libraries, each under its own license (Docs/Licenses/): SDL2,
+   SDL2_image and SDL2_mixer (zlib), libmodplug (public domain), libpng,
+   zlib, the ogles2.library import library (MIT), the minigl.library 29.1
+   import library (Hyperion MiniGL Open Source License) and glm (MIT).
+
+Hurrican is not affiliated with or endorsed by the authors or rights
+holders of Turrican.
+
+
+HISTORY
+-------
+
+1.1  - first release for ogles2.library, with the game of
+       Hurrican_Minigl 1.1
+
+
+CREDITS
+-------
+
+ - Hurrican: Poke53280 (Eiswuxe, Joerg M. Winterstein)
+ - SDL/OpenGL port: Pickle136, Scott R. Smith; further work by Stefan
+   Schmidt (thrimbor), Leandro Nini (drfiemost) and HurricanGame
+ - User levels from turricanforever.de by their authors
+ - ogles2.library and its SDL2 backend: R-Typer and Ladislawv
+ - SDL2_68k: Steffen "MagicSN" Haeuser; PiStorm3D: Dennis van der Boon
+ - Amiga port: Serkan DURSUN
