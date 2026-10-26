@@ -10,13 +10,18 @@ CRT simulation partially based on [CRT effect - Shadertoy, Unity](https://luka71
 
 ![screenshot](https://github.com/HurricanGame/Hurrican/wiki/images/level1.png)
 
-### AmigaOS 68k / MiniGL port
+### AmigaOS 68k / ogles2 port
 
-This repository adds a native AmigaOS 3.x 68k port that draws through
-minigl.library (PiStorm3D on PiStorm, QuarkTex NG in WinUAE), built with
-SDL 1.2 and the `GL1` renderer. Build instructions are in
-[Hurrican/amiga/README.md](Hurrican/amiga/README.md), the release archive is
-on the Releases page and on Aminet as `game/shoot/Hurrican_Minigl.lha`.
+This repository adds a native AmigaOS 3.x 68k port that draws with OpenGL
+ES 2.0 through [ogles2.library](https://github.com/ladislawv/ogles2) (PiStorm
+with a Raspberry Pi 4 / CM4; QuarkTex NG in WinUAE), built with SDL2 and the
+`GLES2` renderer. Build instructions are in
+[Hurrican/amiga/README.md](Hurrican/amiga/README.md) ("ogles2 variant"), the
+release archive is on the Releases page and on Aminet as
+`game/shoot/Hurrican_ogles2.lha`.
+
+The same tree also builds the minigl.library port (SDL 1.2, `GL1`), which is
+released from [Hurrican_Minigl](https://github.com/Sdursun/Hurrican_Minigl).
 
 Licenses: the game and its assets keep Poke53280's terms (free, not for sale,
 see [README.txt](README.txt)); the Amiga port's own code is MIT

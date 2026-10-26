@@ -72,7 +72,7 @@ can be changed as usual.
 SOURCE
 ------
 
-  https://github.com/Sdursun/Hurrican_Minigl  (branch hurrican_ogles2)
+  https://github.com/Sdursun/Hurrican_Ogles2
 
 The ogles2 build (GCC 16 cross compiler, libnix) is described in
 Hurrican/amiga/README.md there; Hurrican/amiga/build-deps-ogles2.sh
